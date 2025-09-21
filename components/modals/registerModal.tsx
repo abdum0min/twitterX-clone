@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
 import Button from '../ui/button'
 import useLoginModal from '@/hooks/useLoginModal'
+import axios from 'axios'
 
 const RegisterModal = () => {
     const [step, setStep] = useState(1)
@@ -59,9 +60,16 @@ function RegisterStep1({
         }
     })
 
-    function onSubmit(values: z.infer<typeof registerStep1Schema>) {
-        setData(values)
-        setStep(2)
+    async function onSubmit(values: z.infer<typeof registerStep1Schema>) {
+        try {
+            const {data} = await axios.post('/api/auth/register?step=1', values)
+            if(data.success){
+                setData(values)
+                setStep(2)
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const { isSubmitting } = form.formState
@@ -117,7 +125,11 @@ function RegisterStep2() {
     })
 
     function onSubmit(values: z.infer<typeof registerStep2Schema>) {
-
+        try {
+            
+        } catch (error) {
+            
+        }
     }
 
     const { isSubmitting } = form.formState
