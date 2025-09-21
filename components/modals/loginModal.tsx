@@ -9,11 +9,15 @@ import { loginSchema, registerStep2Schema } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import useRegisterModal from '@/hooks/useRegisterModal'
+import axios from 'axios'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 
 const LoginModal = () => {
     const loginModal = useLoginModal()
     const registerModal = useRegisterModal()
+    const [error, setError] = React.useState('')
 
     const onToggle = useCallback(() => {
         loginModal.onClose()
@@ -21,22 +25,42 @@ const LoginModal = () => {
     }, [registerModal, loginModal])
 
     const form = useForm<z.infer<typeof loginSchema>>({
-            resolver: zodResolver(loginSchema),
-            defaultValues: {
-                email: "",
-                password: ""
-            }
-        })
-    
-        function onSubmit(values: z.infer<typeof loginSchema>) {
-            
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: ""
         }
-    
-        const { isSubmitting } = form.formState
+    })
+
+    async function onSubmit(values: z.infer<typeof loginSchema>) {
+        try {
+            const { data } = await axios.post('/api/auth/login', values)
+            if (data.success) {
+                loginModal.onClose()
+            }
+        } catch (error: any) {
+            if (error.response?.data?.error) {
+                setError(error.response.data.error)
+            } else {
+                setError('Something went wrong. Please try again.')
+            }
+        }
+    }
+
+    const { isSubmitting } = form.formState
 
     const bodyContent = (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-12">
+                {error &&
+                    <Alert className='bg-transparent' variant={'destructive'}>
+                        <AlertCircle className='h-4 w-4' />
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>
+                            {error}
+                        </AlertDescription>
+                    </Alert>
+                }
                 <FormField
                     control={form.control}
                     name="email"

@@ -22,14 +22,18 @@ export async function POST(req: Request) {
         } else if (step == '2') {
             const { name, email, password, username } = await req.json()
 
-            const isExistingUser = await User.find({ username })
+            const isExistingUser = await User.findOne({ username })
 
             if (isExistingUser) {
                 return NextResponse.json({ error: "Username already exists" }, { status: 400 })
             }
-        }
 
-        return NextResponse.json({ message: "User created successfully" }, { status: 201 })
+            const hashedPassword = await hash(password, 10)
+
+            const user = await User.create({ name, email, password: hashedPassword, username })
+
+            return NextResponse.json({ success: true, user }, { status: 201 })
+        }
     } catch (error) {
         const result = error as Error
         return NextResponse.json({ error: result.message }, { status: 400 })
