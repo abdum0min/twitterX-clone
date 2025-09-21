@@ -8,11 +8,15 @@ import { AiFillGithub } from 'react-icons/ai'
 import useRegisterModal from '@/hooks/useRegisterModal'
 import RegisterModal from '../modals/registerModal'
 import useLoginModal from '@/hooks/useLoginModal'
+import { signIn, useSession } from 'next-auth/react'
 import LoginModal from '../modals/loginModal'
 
 const Auth = () => {
     const registerModal = useRegisterModal()
     const loginModal = useLoginModal()
+
+    const { data } = useSession()
+    console.log(data)
 
     const onOpenRegisterModal = useCallback(() => {
         registerModal.onOpen()
@@ -23,8 +27,8 @@ const Auth = () => {
     }, [loginModal])
     return (
         <>
-            <RegisterModal/>
-            <LoginModal/>
+            <RegisterModal />
+            <LoginModal />
             <div className='grid grid-cols-1 md:grid-cols-2 gap-10 items-center h-screen'>
                 <Image
                     src={'/images/x.svg'}
@@ -50,6 +54,7 @@ const Auth = () => {
                             <Button
                                 fullWidth
                                 secondary
+                                onClick={() => signIn("google")}
                                 label={
                                     <div className='flex gap-2 items-center justify-center'>
                                         <FcGoogle /> Signup with google
@@ -59,6 +64,7 @@ const Auth = () => {
                             <Button
                                 fullWidth
                                 secondary
+                                onClick={() => signIn("github")}
                                 label={
                                     <div className='flex gap-2 items-center justify-center'>
                                         <AiFillGithub /> Signup with github
