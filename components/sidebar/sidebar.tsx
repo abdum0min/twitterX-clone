@@ -6,6 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import SidebarItem from "./sidebar-item"
 import SidebarPostButton from "./sidebar-post-button"
+import SidebarAccount from "./sidebar-account"
 
 const Sidebar = () => {
     const { data: session, status } : any  = useSession()
@@ -43,6 +44,8 @@ const Sidebar = () => {
                 )}
 
                 <SidebarPostButton/>
+
+                <SidebarAccount/>
             </div>
         </section>
     )
