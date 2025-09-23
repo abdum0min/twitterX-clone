@@ -30,7 +30,7 @@ const Sidebar = () => {
     ]
 
     return (
-        <section className="sticky top-0 left-0 h-screen lg:w-[266px], w-fit flex flex-col justify-between py-4">
+        <section className="sticky top-0 left-0 h-screen lg:w-[266px], w-fit flex flex-col justify-between py-4 pl-2">
             <div className="flex flex-col space-y-2">
                 {/* Mobile sidebar */}
                 <div className="rounded-full h-14 w-14 p-4 flex items-center justify-center hover:bg-sky-300 hover:bg-opacity-10 cursor-pointer transition">
@@ -45,8 +45,8 @@ const Sidebar = () => {
 
                 <SidebarPostButton/>
 
-                <SidebarAccount/>
             </div>
+            <SidebarAccount user={session?.currentuser}/>
         </section>
     )
 }
