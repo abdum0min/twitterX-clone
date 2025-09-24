@@ -26,7 +26,7 @@ const Layout = async ({ children }: Props) => {
         <div className='lg:container h-screen mx-auto lg:max-w-7xl'> 
             <div className='flex'>
 
-                <Sidebar/>
+                <Sidebar user={JSON.parse(JSON.stringify(session.currentuser))}/>
                 <div className='flex flex-1 border-x-[1px] border-neutral-800 lg:mx-4 ml-1'>
                     <div className='w-full'>
                         <NextTopLoader

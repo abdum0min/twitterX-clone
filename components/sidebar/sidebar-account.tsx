@@ -2,7 +2,7 @@ import { signOut } from 'next-auth/react'
 import React from 'react'
 import { RiLogoutCircleLine } from 'react-icons/ri'
 import { IUser } from '@/types/'
-import { Popover, PopoverTrigger } from '../ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { MoreHorizontal } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const SidebarAccount = ({ user }: Props) => {
+    console.log('SidebarAccount user:', user);
     return (
         <>
             {/* Mobile sidebar account */}
@@ -24,17 +25,32 @@ const SidebarAccount = ({ user }: Props) => {
 
             {/* Desktop sidebar account */}
             <Popover>
-                <PopoverTrigger className='w-full rounded-full hover:bg-slate-300 hidden lg:block cursor-pointer hover:opacity-30 transition px-4 py-2'>
+                <PopoverTrigger className='w-full rounded-full hover:bg-slate-800 hidden lg:block cursor-pointer transition px-4 py-2'>
                     <div className='flex justify-between items-center gap-2'>
                         <div className='flex gap-2 items-center'>
-                            <Avatar>
+                            <Avatar >
                                 <AvatarImage src={user?.profileImage}/>
-                                <AvatarFallback>{user?.name[0]}</AvatarFallback>
+                                <AvatarFallback>{user.name[0]}</AvatarFallback>
                             </Avatar>
+                            <div className='flex flex-col items-start text-white'>
+                                <p>{user.name}</p>
+                                {user.username ?
+                                    <p className='opacity-40'>{user.username}</p>
+                                    :
+                                    <p className='opacity-40'>Manage account</p>
+                                }
+                            </div>
                         </div>
                         <MoreHorizontal color='white' size={24}/>
                     </div>
                 </PopoverTrigger>
+                <PopoverContent className='bg-black border-none rounded-xl shadow shadow-white px-0 mb-3'>
+                    <div className='font-bold text-white curpsor-pointer hover:bg-slate-800 cursor-pointer p-4 transition'
+                        onClick={() => signOut()}
+                    >
+                        Log out {user.username ? `@${user.username}` : user.name}
+                    </div>
+                </PopoverContent>
             </Popover>
         </>
     )

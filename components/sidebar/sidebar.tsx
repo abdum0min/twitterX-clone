@@ -7,10 +7,9 @@ import Link from "next/link"
 import SidebarItem from "./sidebar-item"
 import SidebarPostButton from "./sidebar-post-button"
 import SidebarAccount from "./sidebar-account"
+import { IUser } from "@/types"
 
-const Sidebar = () => {
-    const { data: session, status } : any  = useSession()
-
+const Sidebar = ({ user }: { user: IUser }) => {
     const sidebarItems = [
         {
             label: 'Home',
@@ -19,12 +18,12 @@ const Sidebar = () => {
         },
         {
             label: 'Notifications',
-            path: `/notlifications/${status === 'authenticated' && session?.currentuser?._id}`,
+            path: `/notlifications/${user?._id}`,
             icon: Bell
         },
         {
             label: 'Profile',
-            path: `/profile/${status === 'authenticated' && session?.currentuser?._id}`,
+            path: `/profile/${user?._id }`,
             icon: User
         }
     ]
@@ -34,19 +33,19 @@ const Sidebar = () => {
             <div className="flex flex-col space-y-2">
                 {/* Mobile sidebar */}
                 <div className="rounded-full h-14 w-14 p-4 flex items-center justify-center hover:bg-sky-300 hover:bg-opacity-10 cursor-pointer transition">
-                    <Image width={56} height={56} src={'/images/logo.svg'} alt="logo"/>
+                    <Image width={56} height={56} src={'/images/logo.svg'} alt="logo" />
                 </div>
 
-                {sidebarItems.map(item => 
+                {sidebarItems.map(item =>
                     <Link key={item.path} href={item.path}>
-                        <SidebarItem item={item}/>
+                        <SidebarItem item={item} />
                     </Link>
                 )}
 
-                <SidebarPostButton/>
+                <SidebarPostButton />
 
             </div>
-            <SidebarAccount user={session?.currentuser}/>
+            <SidebarAccount user={user} />
         </section>
     )
 }
