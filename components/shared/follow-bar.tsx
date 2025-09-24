@@ -1,9 +1,10 @@
 import React from 'react'
 import Button from '../ui/button'
 import { Loader2 } from 'lucide-react'
+import User from './user'
 
 const FollowBar = () => {
-    let isLoaded = true
+    let isLoaded = false
 
     return (
         <div className="py-4 hidden lg:block w-[266px]">
@@ -18,7 +19,9 @@ const FollowBar = () => {
                         <Loader2 className='animate-spin text-sky-500'/>
                     </div>
                 ): (
-                    ''
+                    <div className='flex flex-col gap-6 mt-4'>
+                        <User/>
+                    </div>
                 )}
             </div>
         </div>
