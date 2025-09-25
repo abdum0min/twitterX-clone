@@ -1,8 +1,11 @@
+import Header from '@/components/shared/header'
 import React from 'react'
 
 const HomePage = () => {
     return (
-        <div>HomePage</div>
+        <>
+            <Header label='Home'/>
+        </>
     )
 }
 
