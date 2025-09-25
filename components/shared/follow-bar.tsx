@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react'
 import User from './user'
 import useUsers from '@/hooks/useUsers'
 import { IUser } from '@/types'
+import Link from 'next/link'
 
 const FollowBar = () => {
     const {isLoading, users} = useUsers(5)
@@ -25,7 +26,9 @@ const FollowBar = () => {
                 ): (
                     <div className='flex flex-col gap-6 mt-4'>
                         {users?.map((user: IUser) => 
-                            <User key={user?._id} user={user}/>
+                            <Link key={user?._id} href={`/profile/${user._id}`}>
+                                <User user={user}/>
+                            </Link>
                         )}
                     </div>
                 )}

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { IUser } from '@/types'
+import { sliceText } from '@/lib/utils'
 
 const User = ({ user }: { user: IUser }) => {
     return (
@@ -13,7 +14,9 @@ const User = ({ user }: { user: IUser }) => {
 
                 <div className='flex flex-col'>
                     <p className='text-white font-semibold text-sm line-clamp-1'>{user?.name}</p>
-                    <p className='text-neutral-400 text-sm line-clamp-1'>{user?.username}</p>
+                    <p className='text-neutral-400 text-sm line-clamp-1'>
+                        {user?.username ? `@${sliceText(user?.username, 16)}` : sliceText(user.email, 16)}
+                    </p>
                 </div>
             </div>
         </div>
