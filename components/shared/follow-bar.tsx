@@ -1,10 +1,14 @@
+"use client"
+
 import React from 'react'
 import Button from '../ui/button'
 import { Loader2 } from 'lucide-react'
 import User from './user'
+import useUsers from '@/hooks/useUsers'
+import { IUser } from '@/types'
 
 const FollowBar = () => {
-    let isLoaded = false
+    const {isLoading, users} = useUsers(5)
 
     return (
         <div className="py-4 hidden lg:block w-[266px]">
@@ -14,13 +18,15 @@ const FollowBar = () => {
                     <Button  label='See all' secondary classNames='h-[30px] p-0 w-fit px-3 text-sm'/>
                 </div>  
 
-                {isLoaded ? (
+                {isLoading ? (
                     <div className='flex justify-center items-center h-24'>
                         <Loader2 className='animate-spin text-sky-500'/>
                     </div>
                 ): (
                     <div className='flex flex-col gap-6 mt-4'>
-                        <User/>
+                        {users?.map((user: IUser) => 
+                            <User key={user?._id} user={user}/>
+                        )}
                     </div>
                 )}
             </div>
