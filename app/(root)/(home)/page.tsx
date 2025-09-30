@@ -1,16 +1,49 @@
+"use client"
+
 import Form from '@/components/shared/form'
 import Header from '@/components/shared/header'
-import { authOptions } from '@/lib/auth-options'
-import { getServerSession } from 'next-auth'
-import React from 'react'
+import PostItem from '@/components/shared/post-item'
+import { IPost } from '@/types'
+import axios from 'axios'
+import { Loader2 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import React, { useEffect, useState } from 'react'
 
-const HomePage = async () => {
-    const session: any = await getServerSession(authOptions)
+const HomePage = () => {
+    const { data: session, status }: any = useSession()
+    const [isLoading, setIsLoading] = useState(false)
+    const [posts, setPosts] = useState<IPost[]>([])
+
+    useEffect(() => {
+        const getPosts = async () => {
+            try {
+                setIsLoading(true)
+                const { data } = await axios.get('/api/posts?limit=10',)
+                setPosts(data)
+                setIsLoading(false)
+            } catch (error) {
+                console.log(error)
+                setIsLoading(false)
+            }
+        }
+        getPosts()
+    }, [])
 
     return (
         <>
-            <Header label='Home' />
-            <Form user={JSON.parse(JSON.stringify(session.currentuser))} placeholder="What's on your mind" />
+            <Header label='Home' isBack />
+            {isLoading || status === "loading" ?
+                <div className='flex justify-center items-center h-24'>
+                    <Loader2 className='animate-spin text-sky-500' />
+                </div>
+                :
+                <>
+                    <Form setPosts={setPosts} user={JSON.parse(JSON.stringify(session.currentuser))} placeholder="What's on your mind" />
+                    {posts.map(post => 
+                        <PostItem setPosts={setPosts} key={post._id} post={post} user={JSON.parse(JSON.stringify(session.currentuser))} />
+                    )}
+                </>
+            }
         </>
     )
 }

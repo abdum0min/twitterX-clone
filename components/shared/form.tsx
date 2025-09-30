@@ -1,10 +1,12 @@
 "use client"
 
-import { IUser } from '@/types'
+import { IPost, IUser } from '@/types'
 import { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Button from '../ui/button'
-// import React, { Dispatch, SetStateAction } from 'react'
+import { toast } from 'sonner'
+import axios from 'axios'
+import React, { Dispatch, SetStateAction } from 'react'
 
 
 interface Props {
@@ -13,16 +15,28 @@ interface Props {
     // postId?: string
     user: IUser
     // posts: IPost[]
-    // setPosts: Dispatch<SetStateAction<IPost[]>>
+    setPosts: Dispatch<SetStateAction<IPost[]>>
 }
 
-const Form = ({ user, placeholder }: Props) => {
+const Form = ({ user, placeholder, setPosts }: Props) => {
     const [body, setBody] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
 
     const onSubmit = async () => {
+        try {
+            setIsLoading(true)
+            const {data} = await axios.post('/api/posts', { body, userId: user?._id })
+            const newPost = {...data, user}
+            setPosts(prev => [newPost, ...prev])
 
+            toast.success("Post created successfully.")
+            setIsLoading(false)
+            setBody('')
+        } catch (error) {
+            toast.error("Somthing went wrong. Please try again")
+            setIsLoading(false)
+       }
     }
 
     return (
