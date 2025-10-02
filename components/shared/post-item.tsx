@@ -17,7 +17,7 @@ interface Props {
     setPosts: Dispatch<SetStateAction<IPost[]>>
 }
 
-const PostItem = ({ post, user, setPosts } : Props) => {
+const PostItem = ({ post, user, setPosts }: Props) => {
     const [isLoading, setIsLoading] = useState(false)
 
     const onDelete = async () => {
@@ -36,12 +36,41 @@ const PostItem = ({ post, user, setPosts } : Props) => {
         }
     }
 
+    const onLike = async () => {
+        try {
+            setIsLoading(true)
+            if (post.hasLiked) {
+                await axios.delete('/api/likes', {
+                    data:
+                    {
+                        postId: post._id,
+                        userId: user._id
+                    }
+                })
+                const updatedPost = { ...post, hasLiked: false, likes: post.likes - 1 }
+                setPosts(prev => prev.map(p => p._id === post._id ? updatedPost : p))
+            } else {
+                await axios.put('/api/likes', {
+                    postId: post._id,
+                    userId: user._id
+                })
+                const updatedPost = { ...post, hasLiked: true, likes: post.likes + 1 }
+                setPosts(prev => prev.map(p => p._id === post._id ? updatedPost : p))
+            }
+
+            setIsLoading(false)
+        } catch (error) {
+            setIsLoading(false)
+            return toast.error("Somthing went wrong. Please try again.")
+        }
+    }
+    console.log(post)
     return (
         <div className='border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-900 transition relative'>
             {isLoading &&
                 <div className='absolute inset-0 w-full h-full bg-black opacity-60'>
                     <div className='flex justify-center items-center h-full'>
-                        <Loader2 className='animate-spin text-sky-500'/>
+                        <Loader2 className='animate-spin text-sky-500' />
                     </div>
                 </div>
             }
@@ -75,12 +104,12 @@ const PostItem = ({ post, user, setPosts } : Props) => {
                     <div className='flex flex-row items-center mt-3 gap-10'>
                         <div className='flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500'>
                             <AiOutlineMessage size={20} />
-                            <p>{post.comments.length || 0}</p>
+                            <p>{post.comments || 0}</p>
                         </div>
 
-                        <div className='flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500'>
-                            <FaHeart color='red' size={20} />
-                            <p>{post.likes.length || 0}</p>
+                        <div onClick={onLike} className='flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500'>
+                            <FaHeart color={post.hasLiked ? 'red' : ""} size={20} />
+                            <p>{post.likes || 0}</p>
                         </div>
 
                         {post.user._id === user._id && (

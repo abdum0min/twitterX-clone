@@ -27,7 +27,7 @@ const Form = ({ user, placeholder, setPosts }: Props) => {
         try {
             setIsLoading(true)
             const {data} = await axios.post('/api/posts', { body, userId: user?._id })
-            const newPost = {...data, user}
+            const newPost = {...data, user, likes: 0, comments: 0, hasLiked: false}
             setPosts(prev => [newPost, ...prev])
 
             toast.success("Post created successfully.")
