@@ -10,6 +10,7 @@ import { FaHeart } from 'react-icons/fa'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface Props {
     post: IPost
@@ -19,8 +20,10 @@ interface Props {
 
 const PostItem = ({ post, user, setPosts }: Props) => {
     const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
 
-    const onDelete = async () => {
+    const onDelete = async (e: any) => {
+        e.stopPropagation()
         try {
             setIsLoading(true)
             await axios.delete(`/api/posts`, {
@@ -36,7 +39,8 @@ const PostItem = ({ post, user, setPosts }: Props) => {
         }
     }
 
-    const onLike = async () => {
+    const onLike = async (e: any) => {
+        e.stopPropagation()
         try {
             setIsLoading(true)
             if (post.hasLiked) {
@@ -64,7 +68,11 @@ const PostItem = ({ post, user, setPosts }: Props) => {
             return toast.error("Somthing went wrong. Please try again.")
         }
     }
-    console.log(post)
+
+    const goToPost = () => {
+        router.push(`/posts/${post._id}`)
+    }
+
     return (
         <div className='border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-900 transition relative'>
             {isLoading &&
@@ -74,7 +82,7 @@ const PostItem = ({ post, user, setPosts }: Props) => {
                     </div>
                 </div>
             }
-            <div className='flex flex-row items-center gap-3'>
+            <div onClick={goToPost} className='flex flex-row items-center gap-3 cursor-pointer'>
                 <Avatar>
                     <AvatarImage src={post?.user?.profileImage} />
                     <AvatarFallback>{post?.user?.name[0]}</AvatarFallback>
